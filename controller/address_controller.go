@@ -10,15 +10,14 @@ import (
 	"github.com/Marcxz/academy-go-q32021/usecase"
 )
 
-var (
-	au = usecase.NewAddressUseCase()
-)
+var au = usecase.NewAddressUseCase()
+
 
 // Adress - Interface for Address Controller
 type Address interface {
 	ReadCSVAddress(http.ResponseWriter, *http.Request)
-	GeoCodeAddress(http.ResponseWriter, *http.Request)
-	StoreGeoCodeAddress(http.ResponseWriter, *http.Request)
+	GeocodeAddress(http.ResponseWriter, *http.Request)
+	StoreGeocodeAddress(http.ResponseWriter, *http.Request)
 }
 
 type c struct{}
@@ -47,8 +46,8 @@ func (*c) ReadCSVAddress(w http.ResponseWriter, r *http.Request) {
 	w.Write(ja)
 }
 
-// GeoCodeAddress - contoller func to get the address from a query param
-func (*c) GeoCodeAddress(w http.ResponseWriter, r *http.Request) {
+// GeocodeAddress - contoller func to get the address from a query param
+func (*c) GeocodeAddress(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -77,8 +76,8 @@ func (*c) GeoCodeAddress(w http.ResponseWriter, r *http.Request) {
 	w.Write(jga)
 }
 
-// GeoCodeAddress - contoller func to get the address from a query param
-func (*c) StoreGeoCodeAddress(w http.ResponseWriter, r *http.Request) {
+// StoreGeocodeAddress - geocode an address and store in a csv file
+func (*c) StoreGeocodeAddress(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -90,7 +89,7 @@ func (*c) StoreGeoCodeAddress(w http.ResponseWriter, r *http.Request) {
 		HandleError(w, errors.New("the address should be specified as a queryParam"))
 	}
 
-	ga, err := au.StoreGeoCodeAddress(a)
+	ga, err := au.StoreGeocodeAddress(a)
 
 	if err != nil {
 		HandleError(w, err)

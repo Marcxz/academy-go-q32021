@@ -15,7 +15,7 @@ import (
 type Address interface {
 	ReadCSVAddress(string) ([]models.Address, error)
 	GeocodeAddress(string) (*models.Address, error)
-	StoreGeoCodeAddress(string) (*models.Address, error)
+	StoreGeocodeAddress(string) (*models.Address, error)
 }
 
 var (
@@ -82,12 +82,21 @@ func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 			return nil, err
 		}
 		al := strings.Split(l, "|")
-		id, _ := strconv.Atoi(al[0])
+		id, err := strconv.Atoi(al[0])
+		if err != nil {
+			return nil, err
+		}
 		an := al[1]
-		lat, _ := strconv.ParseFloat(al[2], 64)
-		lng, _ := strconv.ParseFloat(strings.Replace(al[3], "\r", "", 1), 64)
+		lat, err := strconv.ParseFloat(al[2], 64)
+		if err != nil {
+			return nil, err
+		}
+		lng, err := strconv.ParseFloat(strings.Replace(al[3], "\r", "", 1), 64)
+		if err != nil {
+			return nil, err
+		}
 		a := models.Address{
-			Id: id,
+			ID: id,
 			A:  an,
 			P: models.Point{
 				Lat: lat,
@@ -118,7 +127,7 @@ func (*auc) GeocodeAddress(a string) (*models.Address, error) {
 	}
 
 	ad := &models.Address{
-		Id: len(sa),
+		ID: len(sa),
 		A:  a,
 		P: models.Point{
 			Lat: lat,
@@ -129,7 +138,7 @@ func (*auc) GeocodeAddress(a string) (*models.Address, error) {
 	return ad, nil
 }
 
-func (*auc) StoreGeoCodeAddress(a string) (*models.Address, error) {
+func (*auc) StoreGeocodeAddress(a string) (*models.Address, error) {
 	lat, lng, err := gr.GeoCodeAddress(a)
 
 	if err != nil {
@@ -147,7 +156,7 @@ func (*auc) StoreGeoCodeAddress(a string) (*models.Address, error) {
 	}
 
 	ad := &models.Address{
-		Id: len(sa),
+		ID: len(sa),
 		A:  a,
 		P: models.Point{
 			Lat: lat,
@@ -155,7 +164,7 @@ func (*auc) StoreGeoCodeAddress(a string) (*models.Address, error) {
 		},
 	}
 
-	err = cr.StoreAddressCSV(os.Getenv("fn"), ad.Id, ad.A, ad.P.Lat, ad.P.Lng)
+	err = cr.StoreAddressCSV(os.Getenv("fn"), ad.ID, ad.A, ad.P.Lat, ad.P.Lng)
 	if err != nil {
 		return nil, err
 	}

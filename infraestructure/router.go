@@ -14,9 +14,7 @@ type Router interface {
 	Serve(p string)
 }
 
-var (
-	md = mux.NewRouter()
-)
+var md = mux.NewRouter()
 
 type muxRouter struct{}
 
@@ -27,12 +25,12 @@ func NewMuxRouter() Router {
 
 // Get - Refactor and handle the get request from the user
 func (*muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
-	md.HandleFunc(uri, f).Methods("GET")
+	md.HandleFunc(uri, f).Methods(http.MethodGet)
 }
 
 // Post - Refactor and handle the post request from the user
 func (*muxRouter) Post(uri string, f func(w http.ResponseWriter, r *http.Request)) {
-	md.HandleFunc(uri, f).Methods("POST")
+	md.HandleFunc(uri, f).Methods(http.MethodPost)
 }
 
 // Server - Up and run the project

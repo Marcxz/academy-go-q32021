@@ -25,7 +25,7 @@ func StoreAddressCSV(fn string, id int, a string, lat float64, lng float64) erro
 	if err != nil {
 		return err
 	}
-	a = fmt.Sprintf("\n%d|%s|%f|%f", id, a, lat, lng)
+	a = fmt.Sprintf("%d|%s|%f|%f\n", id, a, lat, lng)
 	_, err = f.Write([]byte(a))
 	if err != nil {
 		return err

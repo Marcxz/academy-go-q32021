@@ -17,7 +17,7 @@ func main() {
 	conf.ConfigInit()
 	// Handlers for address
 	hr.Get("/address", ac.ReadCSVAddress)
-	hr.Get("/geocodeAddress", ac.GeoCodeAddress)
-	hr.Get("/storeGeocodeAddress", ac.StoreGeoCodeAddress)
+	hr.Get("/geocodeAddress", ac.GeocodeAddress)
+	hr.Get("/storeGeocodeAddress", ac.StoreGeocodeAddress)
 	hr.Serve(os.Getenv("p"))
 }

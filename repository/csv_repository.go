@@ -10,7 +10,7 @@ import (
 // csv - the interface for the csv repository
 type csv interface {
 	ReadCSVFile(f string) ([]string, error)
-	StoreAddressCSV(f string, id int, a string, lat float64, lng float64) (error)
+	StoreAddressCSV(f string, id int, a string, lat float64, lng float64) error
 }
 
 type cr struct{}
@@ -30,7 +30,7 @@ func (*cr) ReadCSVFile(f string) ([]string, error) {
 	}
 	as := strings.Split(string(cl), "\n")
 
-	return as, nil
+	return as[:len(as)-1], nil
 }
 
 func (*cr) StoreAddressCSV(f string, id int, a string, lat float64, lng float64) error {
