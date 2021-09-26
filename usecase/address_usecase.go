@@ -56,16 +56,6 @@ func validate(i int, l string) error {
 	return nil
 }
 
-/*
-func (*auc) geoAddress(a string) (*models.Address, error) {
-	ad := models.Address{
-		A: a,
-		P: models.Point{},
-	}
-	return &ad, errors.New("Winno")
-}
-*/
-
 // ReadCSVAddress - func to do the bussiness logic when you read all the address from a csv file
 func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 	as = make([]models.Address, 0)
@@ -109,8 +99,9 @@ func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 	return as, nil
 }
 
+//GeocodeAddress - Bussiness logic to validate if an address can be geocoded
 func (*auc) GeocodeAddress(a string) (*models.Address, error) {
-	lat, lng, err := gr.GeoCodeAddress(a)
+	lat, lng, err := gr.GeocodeAddress(a)
 
 	if err != nil {
 		return nil, err
@@ -138,8 +129,9 @@ func (*auc) GeocodeAddress(a string) (*models.Address, error) {
 	return ad, nil
 }
 
+//StoreGeocodeAddress - Bussiness logic to validate if an address can be geocoded and stored
 func (*auc) StoreGeocodeAddress(a string) (*models.Address, error) {
-	lat, lng, err := gr.GeoCodeAddress(a)
+	lat, lng, err := gr.GeocodeAddress(a)
 
 	if err != nil {
 		return nil, err

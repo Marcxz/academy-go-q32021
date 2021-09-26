@@ -12,8 +12,7 @@ import (
 
 var au = usecase.NewAddressUseCase()
 
-
-// Adress - Interface for Address Controller
+// Address - Interface for Address Controller
 type Address interface {
 	ReadCSVAddress(http.ResponseWriter, *http.Request)
 	GeocodeAddress(http.ResponseWriter, *http.Request)

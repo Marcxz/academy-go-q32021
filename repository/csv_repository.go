@@ -33,6 +33,7 @@ func (*cr) ReadCSVFile(f string) ([]string, error) {
 	return as[:len(as)-1], nil
 }
 
+// StoreAddressCSV - repository func to store an address in a csv file
 func (*cr) StoreAddressCSV(f string, id int, a string, lat float64, lng float64) error {
 	return infraestructure.StoreAddressCSV(f, id, a, lat, lng)
 }
