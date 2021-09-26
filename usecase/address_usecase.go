@@ -1,7 +1,9 @@
 package usecase
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -12,10 +14,13 @@ import (
 // Address - the interace for the address usecase
 type Address interface {
 	ReadCSVAddress(string) ([]models.Address, error)
+	GeocodeAddress(string) (*models.Address, error)
+	StoreGeoCodeAddress(string) (*models.Address, error)
 }
 
 var (
 	cr = repository.NewCsvRepository()
+	gr = repository.NewGeoRepository()
 	as = make([]models.Address, 0)
 )
 
@@ -65,10 +70,6 @@ func (*auc) geoAddress(a string) (*models.Address, error) {
 func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 	as = make([]models.Address, 0)
 
-	if f == "" {
-		f = "address.csv"
-	}
-
 	cl, err := cr.ReadCSVFile(f)
 
 	if err != nil {
@@ -97,4 +98,67 @@ func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 	}
 
 	return as, nil
+}
+
+func (*auc) GeocodeAddress(a string) (*models.Address, error) {
+	lat, lng, err := gr.GeoCodeAddress(a)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if lat == -1 || lng == -1 {
+		return nil, errors.New("the geocoding process can't be processed with the address specified")
+	}
+
+	sa, err := cr.ReadCSVFile(os.Getenv("fn"))
+
+	if err != nil {
+		return nil, err
+	}
+
+	ad := &models.Address{
+		Id: len(sa),
+		A:  a,
+		P: models.Point{
+			Lat: lat,
+			Lng: lng,
+		},
+	}
+
+	return ad, nil
+}
+
+func (*auc) StoreGeoCodeAddress(a string) (*models.Address, error) {
+	lat, lng, err := gr.GeoCodeAddress(a)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if lat == -1 || lng == -1 {
+		return nil, errors.New("the geocoding process can't be processed with the address specified")
+	}
+
+	sa, err := cr.ReadCSVFile(os.Getenv("fn"))
+
+	if err != nil {
+		return nil, err
+	}
+
+	ad := &models.Address{
+		Id: len(sa),
+		A:  a,
+		P: models.Point{
+			Lat: lat,
+			Lng: lng,
+		},
+	}
+
+	err = cr.StoreAddressCSV(os.Getenv("fn"), ad.Id, ad.A, ad.P.Lat, ad.P.Lng)
+	if err != nil {
+		return nil, err
+	}
+
+	return ad, nil
 }
