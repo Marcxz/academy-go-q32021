@@ -32,16 +32,9 @@ func TestInvalidReadCSVAddress(t *testing.T) {
 	assert.Equal(t, "open : The system cannot find the file specified.", err.Error())
 
 }
-func TestInvalidGeocodeAddress(t *testing.T) {
+func TestInvalidCreateGeocodeAddress(t *testing.T) {
 	conf.ConfigInit()
-	au := NewAddressUseCase()
-	_, err := au.GeocodeAddress("lasdjfdsalkfj")
-	assert.Equal(t, "the geocoding process can't be processed with the address specified", err.Error())
-}
-
-func TestInvalidStoreGeocodeAddress(t *testing.T) {
-	conf.ConfigInit()
-	au := NewAddressUseCase()
-	_, err := au.StoreGeocodeAddress("lsadjflkasdñjf")
+	ad, err := CreateGeocodeAddress("lasdjfdsalkfj")
+	assert.Nil(t, ad)
 	assert.Equal(t, "the geocoding process can't be processed with the address specified", err.Error())
 }

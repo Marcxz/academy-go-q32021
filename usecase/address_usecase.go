@@ -101,29 +101,9 @@ func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 
 //GeocodeAddress - Bussiness logic to validate if an address can be geocoded
 func (*auc) GeocodeAddress(a string) (*models.Address, error) {
-	lat, lng, err := gr.GeocodeAddress(a)
-
+	ad, err := CreateGeocodeAddress(a)
 	if err != nil {
 		return nil, err
-	}
-
-	if lat == -1 || lng == -1 {
-		return nil, errors.New("the geocoding process can't be processed with the address specified")
-	}
-
-	sa, err := cr.ReadCSVFile(os.Getenv("fn"))
-
-	if err != nil {
-		return nil, err
-	}
-
-	ad := &models.Address{
-		ID: len(sa),
-		A:  a,
-		P: models.Point{
-			Lat: lat,
-			Lng: lng,
-		},
 	}
 
 	return ad, nil
@@ -131,6 +111,17 @@ func (*auc) GeocodeAddress(a string) (*models.Address, error) {
 
 //StoreGeocodeAddress - Bussiness logic to validate if an address can be geocoded and stored
 func (*auc) StoreGeocodeAddress(a string) (*models.Address, error) {
+
+	ad, _ := CreateGeocodeAddress(a)
+	err := cr.StoreAddressCSV(os.Getenv("fn"), ad.ID, ad.A, ad.P.Lat, ad.P.Lng)
+	if err != nil {
+		return nil, err
+	}
+
+	return ad, nil
+}
+
+func CreateGeocodeAddress(a string) (*models.Address, error) {
 	lat, lng, err := gr.GeocodeAddress(a)
 
 	if err != nil {
@@ -155,11 +146,5 @@ func (*auc) StoreGeocodeAddress(a string) (*models.Address, error) {
 			Lng: lng,
 		},
 	}
-
-	err = cr.StoreAddressCSV(os.Getenv("fn"), ad.ID, ad.A, ad.P.Lat, ad.P.Lng)
-	if err != nil {
-		return nil, err
-	}
-
 	return ad, nil
 }
