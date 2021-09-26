@@ -3,7 +3,6 @@ package controller
 import (
 	"encoding/json"
 	"errors"
-	"log"
 	"net/http"
 	"os"
 
@@ -108,5 +107,4 @@ func (*c) StoreGeocodeAddress(w http.ResponseWriter, r *http.Request) {
 // HandleError - Refactored func to report the errors in the controllers
 func HandleError(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusInternalServerError)
-	log.Fatalln(err)
 }
