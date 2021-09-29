@@ -1,0 +1,4 @@
+server: ":3000"
+base_path: "files/"
+filename: "address.csv"
+api_url: "https://appreactivacioneconomica.tlajomulco.gob.mx/api/georeferencia/queryGeoreferencia"

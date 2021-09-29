@@ -7,11 +7,23 @@ import (
 	"github.com/gorilla/mux"
 )
 
+type Getter interface {
+	Get(uri string, f func(http.ResponseWriter, *http.Request))
+}
+
+type Poster interface {
+	Post(uri string, f func(http.ResponseWriter, *http.Request))
+}
+
+type Server interface {
+	Serve(p string)
+}
+
 // Router - Interface to mock the router interface
 type Router interface {
-	Get(uri string, f func(http.ResponseWriter, *http.Request))
-	Post(uri string, f func(http.ResponseWriter, *http.Request))
-	Serve(p string)
+	Getter
+	Poster
+	Server
 }
 
 var md = mux.NewRouter()
@@ -19,9 +31,19 @@ var md = mux.NewRouter()
 type muxRouter struct{}
 
 //NewMuxRouter - like the constructor of the Router to handle all the request from the user
+
 func NewMuxRouter() Router {
 	return &muxRouter{}
 }
+
+/*
+func (m *muxRouter) ConfigHandlers() {
+	// address Handlers
+	m.Get("/address", m.ac.ReadCSVAddress)
+	m.Get("/geocodeAddress", m.ac.GeocodeAddress)
+	m.Get("/storeGeocodeAddress", m.ac.StoreGeocodeAddress)
+}
+*/
 
 // Get - Refactor and handle the get request from the user
 func (*muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {

@@ -1,17 +1,61 @@
 package conf
 
-import "os"
+import (
+	"flag"
+	"fmt"
+	"os"
 
-var (
-	p  = ":3000"
-	bp = "files/"
-	fn = "address.csv"
-	au = "https://appreactivacioneconomica.tlajomulco.gob.mx/api/georeferencia/queryGeoreferencia"
+	"gopkg.in/yaml.v3"
 )
 
-func ConfigInit() {
-	os.Setenv("p", p)
-	os.Setenv("bp", bp)
-	os.Setenv("fn", fn)
-	os.Setenv("au", au)
+type Config struct {
+	Server    string `yaml:"server"`
+	Base_path string `yaml:"base_path"`
+	Filename  string `yaml:"filename"`
+	Api_url   string `yaml:"api_url"`
+}
+
+func NewConfig(p string) (*Config, error) {
+	c := &Config{}
+
+	f, err := os.Open(p)
+	if err != nil {
+		return nil, err
+	}
+
+	d := yaml.NewDecoder(f)
+
+	if err := d.Decode(&c); err != nil {
+		return nil, err
+	}
+
+	return c, nil
+}
+
+func ValidateConfigPath(p string) error {
+	s, err := os.Stat(p)
+
+	if err != nil {
+		return err
+	}
+
+	if s.IsDir() {
+		return fmt.Errorf("'%s' is a directory, should be a file", p)
+	}
+
+	return nil
+}
+
+func ParseFlags() (string, error) {
+	var cp string
+
+	flag.StringVar(&cp, "conf", "conf/conf.yml", "path config file")
+
+	flag.Parse()
+
+	if err := ValidateConfigPath(cp); err != nil {
+		return "", err
+	}
+
+	return cp, nil
 }

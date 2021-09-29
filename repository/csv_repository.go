@@ -7,22 +7,32 @@ import (
 	"github.com/Marcxz/academy-go-q32021/infraestructure"
 )
 
-// csv - the interface for the csv repository
-type csv interface {
-	ReadCSVFile(f string) ([]string, error)
-	StoreAddressCSV(f string, id int, a string, lat float64, lng float64) error
+type Reader interface {
+	ReadCSVFile() ([]string, error)
 }
+type Storer interface {
+	StoreAddressCSV(id int, a string, lat float64, lng float64) error
+}
+
+// csv - the interface for the csv repository
+type Csv interface {
+	Reader
+	Storer
+}
+
+var icsv infraestructure.Csv
 
 type cr struct{}
 
 // NewCsvRepository - func to create new csv repository used in usecase
-func NewCsvRepository() csv {
+func NewCsvRepository(i_csv infraestructure.Csv) Csv {
+	icsv = i_csv
 	return &cr{}
 }
 
 // ReadCSVFile - func inteconnect repository with csv infraestructure to read csv files.
-func (*cr) ReadCSVFile(f string) ([]string, error) {
-	cl, err := infraestructure.ReadCSVFile(f)
+func (*cr) ReadCSVFile() ([]string, error) {
+	cl, err := icsv.ReadCSVFile()
 
 	if err != nil {
 		fmt.Println("error", err)
@@ -34,6 +44,6 @@ func (*cr) ReadCSVFile(f string) ([]string, error) {
 }
 
 // StoreAddressCSV - repository func to store an address in a csv file
-func (*cr) StoreAddressCSV(f string, id int, a string, lat float64, lng float64) error {
-	return infraestructure.StoreAddressCSV(f, id, a, lat, lng)
+func (*cr) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
+	return icsv.StoreAddressCSV(id, a, lat, lng)
 }

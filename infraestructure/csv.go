@@ -4,11 +4,27 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+
+	"github.com/Marcxz/academy-go-q32021/conf"
 )
 
+type Csv interface {
+	ReadCSVFile() ([]byte, error)
+	StoreAddressCSV(id int, a string, lat float64, lng float64) error
+}
+
+var icfg *conf.Config
+
+type c struct{}
+
+func NewCsvInfraestructure(cfg *conf.Config) Csv {
+	icfg = cfg
+	return &c{}
+}
+
 // ReadCSVFile - Read a CSV file with a filename specified
-func ReadCSVFile(f string) ([]byte, error) {
-	p := fmt.Sprintf("%s%s", os.Getenv("bp"), f)
+func (*c) ReadCSVFile() ([]byte, error) {
+	p := fmt.Sprintf("%s%s", icfg.Base_path, icfg.Filename)
 	l, err := ioutil.ReadFile(p)
 
 	if err != nil {
@@ -18,10 +34,10 @@ func ReadCSVFile(f string) ([]byte, error) {
 	return l, nil
 }
 
-func StoreAddressCSV(fn string, id int, a string, lat float64, lng float64) error {
-	p := fmt.Sprintf("%s%s", os.Getenv("bp"), fn)
+func (*c) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
+	p := fmt.Sprintf("%s%s", icfg.Base_path, icfg.Filename)
 
-	f, err := os.OpenFile(p, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(p, os.O_APPEND, 0644)
 	if err != nil {
 		return err
 	}

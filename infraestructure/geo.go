@@ -7,18 +7,22 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
+
+	"github.com/Marcxz/academy-go-q32021/conf"
 )
 
 // geo - interface that connects to an external api to do geocoding process
-type geo interface {
+type Geo interface {
 	GeocodingAddress(string) (float64, float64, error)
 }
+
+var cfg *conf.Config
 
 type g struct{}
 
 // NewGeoInfraestructure - constructor for geo infrastructure
-func NewGeoInfraestructure() geo {
+func NewGeoInfraestructure(config *conf.Config) Geo {
+	cfg = config
 	return &g{}
 }
 
@@ -26,8 +30,7 @@ func NewGeoInfraestructure() geo {
 func (*g) GeocodingAddress(a string) (float64, float64, error) {
 	v := make(url.Values)
 	v.Add("direccion", a)
-
-	url := fmt.Sprintf("%s?%s", os.Getenv("au"), v.Encode())
+	url := fmt.Sprintf("%s?%s", cfg.Api_url, v.Encode())
 
 	r, err := http.Get(url)
 
@@ -41,16 +44,15 @@ func (*g) GeocodingAddress(a string) (float64, float64, error) {
 	if err != nil {
 		return -1, -1, err
 	}
-	s := string(b)
 
-	byt := []byte(s)
+	byt := []byte(string(b))
 	var dat map[string]interface{}
 
 	if err := json.Unmarshal(byt, &dat); err != nil {
 		return -1, -1, err
 	}
 
-	if dat["status"].(float64) != 200 {
+	if dat["status"].(float64) != http.StatusOK {
 		return -1, -1, errors.New(dat["message"].(string))
 	}
 
@@ -61,6 +63,5 @@ func (*g) GeocodingAddress(a string) (float64, float64, error) {
 	if lat == -1 && lng == -1 {
 		return -1, -1, err
 	}
-
 	return lat, lng, nil
 }
