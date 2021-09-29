@@ -8,9 +8,17 @@ import (
 	"github.com/Marcxz/academy-go-q32021/conf"
 )
 
-type Csv interface {
+type Reader interface {
 	ReadCSVFile() ([]byte, error)
+}
+
+type Storer interface {
 	StoreAddressCSV(id int, a string, lat float64, lng float64) error
+}
+
+type Csv interface {
+	Reader
+	Storer
 }
 
 var icfg *conf.Config
