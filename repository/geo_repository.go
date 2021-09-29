@@ -1,3 +1,4 @@
+//go:generate mockgen -source geo_repository.go -destination mock/geo_repository_mock.go -package mock
 package repository
 
 import "github.com/Marcxz/academy-go-q32021/infraestructure"

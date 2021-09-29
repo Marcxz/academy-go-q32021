@@ -1,3 +1,4 @@
+//go:generate mockgen -source csv_repository.go -destination mock/csv_repository_mock.go -package mock
 package repository
 
 import (
