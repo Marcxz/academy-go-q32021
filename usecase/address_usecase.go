@@ -1,3 +1,4 @@
+//go:generate mockgen -source address_usecase.go -destination mock/address_usecase_mock.go -package mock
 package usecase
 
 import (
