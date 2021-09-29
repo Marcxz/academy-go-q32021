@@ -26,12 +26,13 @@ type Router interface {
 	Server
 }
 
-var md = mux.NewRouter()
+var (
+	md = mux.NewRouter()
+)
 
 type muxRouter struct{}
 
 //NewMuxRouter - like the constructor of the Router to handle all the request from the user
-
 func NewMuxRouter() Router {
 	return &muxRouter{}
 }
@@ -39,11 +40,10 @@ func NewMuxRouter() Router {
 /*
 func (m *muxRouter) ConfigHandlers() {
 	// address Handlers
-	m.Get("/address", m.ac.ReadCSVAddress)
-	m.Get("/geocodeAddress", m.ac.GeocodeAddress)
-	m.Get("/storeGeocodeAddress", m.ac.StoreGeocodeAddress)
-}
-*/
+	m.Get("/address", ac.ReadCSVAddress)
+	m.Get("/geocodeAddress", ac.GeocodeAddress)
+	m.Get("/storeGeocodeAddress", ac.StoreGeocodeAddress)
+}*/
 
 // Get - Refactor and handle the get request from the user
 func (*muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
