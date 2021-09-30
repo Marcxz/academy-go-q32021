@@ -34,6 +34,8 @@ func main() {
 	// infraestructure
 	icsv := infraestructure.NewCsvInfraestructure(cfg)
 	igeo := infraestructure.NewGeoInfraestructure(cfg)
+	r := mux.NewRouter()
+	ir := infraestructure.NewRouterInfraestructure(r)
 
 	// repository
 	rcsv := repository.NewCsvRepository(icsv)
@@ -44,9 +46,11 @@ func main() {
 
 	// controller
 	ac := controller.NewAddressController(cfg, au)
-	r := mux.NewRouter()
+	
+	// address Handlers
+	ir.Get("/address", ac.ReadCSVAddress)
+	ir.Get("/geocodeAddress", ac.GeocodeAddress)
+	ir.Get("/storeGeocodeAddress", ac.StoreGeocodeAddress)
 
-	ir := infraestructure.NewRouterInfraestructure(r, ac)
-	ir.ConfigureHandlers()
 	ir.Serve(cfg.Server)
 }

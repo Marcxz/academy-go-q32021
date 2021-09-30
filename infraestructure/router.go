@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Marcxz/academy-go-q32021/controller"
 	"github.com/gorilla/mux"
 )
 
@@ -28,30 +27,28 @@ type Handler interface {
 type Router interface {
 	Getter
 	Poster
-	Handler
 	Server
 }
 
 type muxRouter struct {
-	r   *mux.Router
-	auc controller.Address
+	r *mux.Router
 }
 
 //NewRouterInfraestructure - like the constructor of the Router to handle all the request from the user
-func NewRouterInfraestructure(r *mux.Router, auc controller.Address) Router {
+func NewRouterInfraestructure(r *mux.Router) Router {
 	return &muxRouter{
 		r,
-		auc,
 	}
 }
 
+/*
 func (m *muxRouter) ConfigHandlers() {
 	// address Handlers
 	m.Get("/address", m.auc.ReadCSVAddress)
 	m.Get("/geocodeAddress", m.auc.GeocodeAddress)
 	m.Get("/storeGeocodeAddress", m.auc.StoreGeocodeAddress)
 }
-
+*/
 // Get - Refactor and handle the get request from the user
 func (m *muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	m.r.HandleFunc(uri, f).Methods(http.MethodGet)

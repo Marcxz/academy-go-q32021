@@ -134,7 +134,7 @@ func validate(i int, l string) error {
 
 func (a *auc) createGeocodeAddress(add string) (*models.Address, error) {
 	lat, lng, err := a.Gr.GeocodeAddress(add)
-	fmt.Println(lat, lng)
+
 	if err != nil {
 		return nil, err
 	}
