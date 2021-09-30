@@ -16,21 +16,22 @@ type Geo interface {
 	GeocodingAddress(string) (float64, float64, error)
 }
 
-var cfg *conf.Config
-
-type g struct{}
+type ig struct {
+	con *conf.Config
+}
 
 // NewGeoInfraestructure - constructor for geo infrastructure
-func NewGeoInfraestructure(config *conf.Config) Geo {
-	cfg = config
-	return &g{}
+func NewGeoInfraestructure(cfg *conf.Config) Geo {
+	return &ig{
+		cfg,
+	}
 }
 
 // GeocodingAddress - function that given an address, connect to an external api and translate it to a lat,lng coordinate
-func (*g) GeocodingAddress(a string) (float64, float64, error) {
+func (g *ig) GeocodingAddress(a string) (float64, float64, error) {
 	v := make(url.Values)
 	v.Add("direccion", a)
-	url := fmt.Sprintf("%s?%s", cfg.Api_url, v.Encode())
+	url := fmt.Sprintf("%s?%s", g.con.Api_url, v.Encode())
 
 	r, err := http.Get(url)
 

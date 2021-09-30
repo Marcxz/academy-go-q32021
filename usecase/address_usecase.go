@@ -29,26 +29,24 @@ type Address interface {
 	Storer
 }
 
-var (
-	cr repository.Csv
-	gr repository.Geo
-	as = make([]models.Address, 0)
-)
-
-type auc struct{}
+type auc struct {
+	Cr repository.Csv
+	Gr repository.Geo
+}
 
 // NewAddressUseCase - func to create a new address usecase used to link with the controller
 func NewAddressUseCase(rcsv repository.Csv, rgeo repository.Geo) Address {
-	cr = rcsv
-	gr = rgeo
-	return &auc{}
+	return &auc{
+		rcsv,
+		rgeo,
+	}
 }
 
 // ReadCSVAddress - func to do the bussiness logic when you read all the address from a csv file
-func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
-	as = make([]models.Address, 0)
+func (a *auc) ReadCSVAddress(f string) ([]models.Address, error) {
+	as := make([]models.Address, 0)
 
-	cl, err := cr.ReadCSVFile()
+	cl, err := a.Cr.ReadCSVFile()
 
 	if err != nil {
 		return nil, err
@@ -88,8 +86,8 @@ func (*auc) ReadCSVAddress(f string) ([]models.Address, error) {
 }
 
 //GeocodeAddress - Bussiness logic to validate if an address can be geocoded
-func (*auc) GeocodeAddress(a string) (*models.Address, error) {
-	ad, err := createGeocodeAddress(a)
+func (a *auc) GeocodeAddress(add string) (*models.Address, error) {
+	ad, err := a.createGeocodeAddress(add)
 	if err != nil {
 		return nil, err
 	}
@@ -98,10 +96,10 @@ func (*auc) GeocodeAddress(a string) (*models.Address, error) {
 }
 
 //StoreGeocodeAddress - Bussiness logic to validate if an address can be geocoded and stored
-func (*auc) StoreGeocodeAddress(a string) (*models.Address, error) {
+func (a *auc) StoreGeocodeAddress(add string) (*models.Address, error) {
 
-	ad, _ := createGeocodeAddress(a)
-	err := cr.StoreAddressCSV(ad.ID, ad.A, ad.P.Lat, ad.P.Lng)
+	ad, _ := a.createGeocodeAddress(add)
+	err := a.Cr.StoreAddressCSV(ad.ID, ad.A, ad.P.Lat, ad.P.Lng)
 	if err != nil {
 		return nil, err
 	}
@@ -134,8 +132,8 @@ func validate(i int, l string) error {
 	return nil
 }
 
-func createGeocodeAddress(a string) (*models.Address, error) {
-	lat, lng, err := gr.GeocodeAddress(a)
+func (a *auc) createGeocodeAddress(add string) (*models.Address, error) {
+	lat, lng, err := a.Gr.GeocodeAddress(add)
 	fmt.Println(lat, lng)
 	if err != nil {
 		return nil, err
@@ -145,7 +143,7 @@ func createGeocodeAddress(a string) (*models.Address, error) {
 		return nil, errors.New("the geocoding process can't be processed with the address specified")
 	}
 
-	sa, err := cr.ReadCSVFile()
+	sa, err := a.Cr.ReadCSVFile()
 
 	if err != nil {
 		return nil, err
@@ -153,7 +151,7 @@ func createGeocodeAddress(a string) (*models.Address, error) {
 
 	ad := &models.Address{
 		ID: len(sa),
-		A:  a,
+		A:  add,
 		P: models.Point{
 			Lat: lat,
 			Lng: lng,

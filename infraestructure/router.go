@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Marcxz/academy-go-q32021/controller"
 	"github.com/gorilla/mux"
 )
 
@@ -19,44 +20,50 @@ type Server interface {
 	Serve(p string)
 }
 
+type Handler interface {
+	ConfigHandlers()
+}
+
 // Router - Interface to mock the router interface
 type Router interface {
 	Getter
 	Poster
+	Handler
 	Server
 }
 
-var (
-	md = mux.NewRouter()
-)
-
-type muxRouter struct{}
-
-//NewMuxRouter - like the constructor of the Router to handle all the request from the user
-func NewMuxRouter() Router {
-	return &muxRouter{}
+type muxRouter struct {
+	r   *mux.Router
+	auc controller.Address
 }
 
-/*
+//NewRouterInfraestructure - like the constructor of the Router to handle all the request from the user
+func NewRouterInfraestructure(r *mux.Router, auc controller.Address) Router {
+	return &muxRouter{
+		r,
+		auc,
+	}
+}
+
 func (m *muxRouter) ConfigHandlers() {
 	// address Handlers
-	m.Get("/address", ac.ReadCSVAddress)
-	m.Get("/geocodeAddress", ac.GeocodeAddress)
-	m.Get("/storeGeocodeAddress", ac.StoreGeocodeAddress)
-}*/
+	m.Get("/address", m.auc.ReadCSVAddress)
+	m.Get("/geocodeAddress", m.auc.GeocodeAddress)
+	m.Get("/storeGeocodeAddress", m.auc.StoreGeocodeAddress)
+}
 
 // Get - Refactor and handle the get request from the user
-func (*muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
-	md.HandleFunc(uri, f).Methods(http.MethodGet)
+func (m *muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
+	m.r.HandleFunc(uri, f).Methods(http.MethodGet)
 }
 
 // Post - Refactor and handle the post request from the user
-func (*muxRouter) Post(uri string, f func(w http.ResponseWriter, r *http.Request)) {
-	md.HandleFunc(uri, f).Methods(http.MethodPost)
+func (m *muxRouter) Post(uri string, f func(w http.ResponseWriter, r *http.Request)) {
+	m.r.HandleFunc(uri, f).Methods(http.MethodPost)
 }
 
 // Server - Up and run the project
-func (*muxRouter) Serve(p string) {
+func (m *muxRouter) Serve(p string) {
 	fmt.Printf("Server is running on port %s", p)
-	http.ListenAndServe(p, md)
+	http.ListenAndServe(p, m.r)
 }

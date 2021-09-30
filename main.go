@@ -8,6 +8,7 @@ import (
 	"github.com/Marcxz/academy-go-q32021/infraestructure"
 	"github.com/Marcxz/academy-go-q32021/repository"
 	"github.com/Marcxz/academy-go-q32021/usecase"
+	"github.com/gorilla/mux"
 )
 
 var (
@@ -31,7 +32,6 @@ func main() {
 	ConfigYML()
 
 	// infraestructure
-	ir := infraestructure.NewMuxRouter()
 	icsv := infraestructure.NewCsvInfraestructure(cfg)
 	igeo := infraestructure.NewGeoInfraestructure(cfg)
 
@@ -44,10 +44,9 @@ func main() {
 
 	// controller
 	ac := controller.NewAddressController(cfg, au)
+	r := mux.NewRouter()
 
-	ir.Get("/address", ac.ReadCSVAddress)
-	ir.Get("/geocodeAddress", ac.GeocodeAddress)
-	ir.Get("/storeGeocodeAddress", ac.StoreGeocodeAddress)
-
+	ir := infraestructure.NewRouterInfraestructure(r, ac)
+	ir.ConfigureHandlers()
 	ir.Serve(cfg.Server)
 }

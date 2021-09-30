@@ -7,17 +7,18 @@ type Geo interface {
 	GeocodeAddress(string) (float64, float64, error)
 }
 
-var ig infraestructure.Geo
-
-type g struct{}
+type gr struct {
+	geo infraestructure.Geo
+}
 
 // NewGeoRepository - constructor func for geo repository
 func NewGeoRepository(igeo infraestructure.Geo) Geo {
-	ig = igeo
-	return &g{}
+	return &gr{
+		igeo,
+	}
 }
 
 // GeocodeAddress - func to geocode an address
-func (*g) GeocodeAddress(a string) (float64, float64, error) {
-	return ig.GeocodingAddress(a)
+func (g *gr) GeocodeAddress(a string) (float64, float64, error) {
+	return g.geo.GeocodingAddress(a)
 }

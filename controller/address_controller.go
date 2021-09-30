@@ -28,23 +28,22 @@ type Address interface {
 	Storer
 }
 
-var (
+type ac struct {
 	con *conf.Config
 	au  usecase.Address
-)
-
-type c struct{}
+}
 
 // NewAddressController - The constructor for a controller used at routes
 func NewAddressController(config *conf.Config, auc usecase.Address) Address {
-	con = config
-	au = auc
-	return &c{}
+	return &ac{
+		config,
+		auc,
+	}
 }
 
 // ReadCSVAddress - Handler to read the all the Addresses from a csv file
-func (*c) ReadCSVAddress(w http.ResponseWriter, r *http.Request) {
-	ad, err := au.ReadCSVAddress(con.Filename)
+func (c *ac) ReadCSVAddress(w http.ResponseWriter, r *http.Request) {
+	ad, err := c.au.ReadCSVAddress(c.con.Filename)
 
 	if err != nil {
 		handleError(w, err)
@@ -62,7 +61,7 @@ func (*c) ReadCSVAddress(w http.ResponseWriter, r *http.Request) {
 }
 
 // GeocodeAddress - contoller func to get the address from a query param
-func (*c) GeocodeAddress(w http.ResponseWriter, r *http.Request) {
+func (c *ac) GeocodeAddress(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -74,7 +73,7 @@ func (*c) GeocodeAddress(w http.ResponseWriter, r *http.Request) {
 		handleError(w, errors.New("the address should be specified as a queryParam"))
 	}
 
-	ga, err := au.GeocodeAddress(a)
+	ga, err := c.au.GeocodeAddress(a)
 
 	if err != nil {
 		handleError(w, err)
@@ -92,7 +91,7 @@ func (*c) GeocodeAddress(w http.ResponseWriter, r *http.Request) {
 }
 
 // StoreGeocodeAddress - geocode an address and store in a csv file
-func (*c) StoreGeocodeAddress(w http.ResponseWriter, r *http.Request) {
+func (c *ac) StoreGeocodeAddress(w http.ResponseWriter, r *http.Request) {
 
 	err := r.ParseForm()
 	if err != nil {
@@ -104,7 +103,7 @@ func (*c) StoreGeocodeAddress(w http.ResponseWriter, r *http.Request) {
 		handleError(w, errors.New("the address should be specified as a queryParam"))
 	}
 
-	ga, err := au.StoreGeocodeAddress(a)
+	ga, err := c.au.StoreGeocodeAddress(a)
 
 	if err != nil {
 		handleError(w, err)

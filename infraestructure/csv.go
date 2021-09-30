@@ -21,18 +21,19 @@ type Csv interface {
 	Storer
 }
 
-var icfg *conf.Config
-
-type c struct{}
+type ic struct {
+	con *conf.Config
+}
 
 func NewCsvInfraestructure(cfg *conf.Config) Csv {
-	icfg = cfg
-	return &c{}
+	return &ic{
+		cfg,
+	}
 }
 
 // ReadCSVFile - Read a CSV file with a filename specified
-func (*c) ReadCSVFile() ([]byte, error) {
-	p := fmt.Sprintf("%s%s", icfg.Base_path, icfg.Filename)
+func (c *ic) ReadCSVFile() ([]byte, error) {
+	p := fmt.Sprintf("%s%s", c.con.Base_path, c.con.Filename)
 	l, err := ioutil.ReadFile(p)
 
 	if err != nil {
@@ -42,8 +43,8 @@ func (*c) ReadCSVFile() ([]byte, error) {
 	return l, nil
 }
 
-func (*c) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
-	p := fmt.Sprintf("%s%s", icfg.Base_path, icfg.Filename)
+func (c *ic) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
+	p := fmt.Sprintf("%s%s", c.con.Base_path, c.con.Filename)
 
 	f, err := os.OpenFile(p, os.O_APPEND, 0644)
 	if err != nil {
