@@ -1,5 +1,48 @@
 package usecase
 
+import (
+	"github.com/Marcxz/academy-go-q32021/models"
+	"github.com/Marcxz/academy-go-q32021/repository/mock"
+	"testing"
+
+	"github.com/Marcxz/academy-go-q32021/usecase"
+	"github.com/golang/mock/gomock"
+)
+
+func TestReadCSVAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	aAddFound := []models.Address{
+		models.Address{
+			ID: 0,
+			A:  "centro,guadalajara,jalisco",
+			P: models.Point{
+				Lat: 20.6866131,
+				Lng: -103.3507872,
+			},
+		},
+	}
+
+	defer ctrl.Finish()
+
+	mcr := mock.NewMockCsv(ctrl)
+	mgr := mock.NewMockGeo(ctrl)
+
+	auc := usecase.NewAddressUseCase(mcr, mgr)
+
+	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
+	aadd, err := auc.ReadCSVAddress()
+
+	if err != nil {
+		t.Error(err.Error())
+		t.Fail()
+	}
+	
+	if aadd == nil {
+		t.Error("the array of addresses shouldn't be nil")
+		t.Fail()
+	}
+}
+
 /*
 import (
 	"academy-go-q32021/repository/mock"

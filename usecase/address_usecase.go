@@ -1,4 +1,3 @@
-//go:generate mockgen -source address_usecase.go -destination mock/address_usecase_mock.go -package mock
 package usecase
 
 import (
@@ -12,7 +11,7 @@ import (
 )
 
 type Reader interface {
-	ReadCSVAddress(string) ([]models.Address, error)
+	ReadCSVAddress() ([]models.Address, error)
 }
 type Geolocater interface {
 	GeocodeAddress(string) (*models.Address, error)
@@ -43,7 +42,7 @@ func NewAddressUseCase(rcsv repository.Csv, rgeo repository.Geo) Address {
 }
 
 // ReadCSVAddress - func to do the bussiness logic when you read all the address from a csv file
-func (a *auc) ReadCSVAddress(f string) ([]models.Address, error) {
+func (a *auc) ReadCSVAddress() ([]models.Address, error) {
 	as := make([]models.Address, 0)
 
 	cl, err := a.Cr.ReadCSVFile()

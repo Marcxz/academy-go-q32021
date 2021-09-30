@@ -43,7 +43,7 @@ func NewAddressController(config *conf.Config, auc usecase.Address) Address {
 
 // ReadCSVAddress - Handler to read the all the Addresses from a csv file
 func (c *ac) ReadCSVAddress(w http.ResponseWriter, r *http.Request) {
-	ad, err := c.au.ReadCSVAddress(c.con.Filename)
+	ad, err := c.au.ReadCSVAddress()
 
 	if err != nil {
 		handleError(w, err)
