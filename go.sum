@@ -1,5 +1,6 @@
-github.com/Marcxz/academy-go-q32021 v0.0.0-20210929120901-e4a559049f8c h1:nuFZocUMXf7D+gtcPDl6GcNgHbAjxtV4flY+wLSqAsw=
 github.com/Marcxz/academy-go-q32021 v0.0.0-20210929120901-e4a559049f8c/go.mod h1:QTFjPiMeDdd3T+YPolbn6e5HTO3War0qRCdXyUIq7rY=
+github.com/Marcxz/academy-go-q32021 v0.0.0-20210930043416-5c8fe16073d8 h1:Kyn6xlDKtNJ3n3/CxSulg/PnLh2g02DugA9e1B4ZflI=
+github.com/Marcxz/academy-go-q32021 v0.0.0-20210930043416-5c8fe16073d8/go.mod h1:3QaaM7SMT2ZsHvmYOLF5f76jk6ZOiYc2AjIpKyuzccM=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=

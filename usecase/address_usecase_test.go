@@ -1,5 +1,5 @@
 package usecase
-/*
+
 import (
 	"testing"
 
@@ -43,6 +43,51 @@ func TestReadCSVAddress(t *testing.T) {
 		t.Fail()
 	}
 }
+func TestGeocodeAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+
+	defer ctrl.Finish()
+
+	mcr := mock.NewMockCsv(ctrl)
+	mgr := mock.NewMockGeo(ctrl)
+
+	auc := NewAddressUseCase(mcr, mgr)
+
+	am, err := auc.GeocodeAddress("wizeline, guadalajara, méxico")
+
+	if err != nil {
+		t.Error(err.Error())
+		t.Fail()
+	}
+
+	if am != nil {
+		t.Error("the address shouldn't be nil")
+		t.Fail()
+	}
+}
+
+func TestStoreGeocodeAddress(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	add := "wizeline, guadalajara, mexico"
+
+	mgr := mock.NewMockGeo(ctrl)
+	mcr := mock.NewMockCsv(ctrl)
+
+	auc := NewAddressUseCase(mcr, mgr)
+
+	a, err := auc.StoreGeocodeAddress(add)
+
+	if err != nil {
+		t.Error(err.Error())
+		t.Fatal()
+	}
+
+	if a != nil {
+		t.Error("the address shouldn't be nil")
+		t.Fatal()
+	}
+	defer ctrl.Finish()
+}
 func TestInvalidLineValidate(t *testing.T) {
 	err := validate(0, "0|INVALID|-1")
 	assert.Equal(t, "the line at the index 0 should be composed for 4 pipes", err.Error())
@@ -61,4 +106,3 @@ func TestInvalidLngValidate(t *testing.T) {
 	err := validate(0, "0|address|-1|invalidLng")
 	assert.Equal(t, "the lng column at the index 0 should be float invalidLng", err.Error())
 }
-*/
