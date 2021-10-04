@@ -9,10 +9,15 @@ import (
 )
 
 type Config struct {
-	Server    string `yaml:"server"`
-	Base_path string `yaml:"base_path"`
-	Filename  string `yaml:"filename"`
-	Api_url   string `yaml:"api_url"`
+	Server            string `yaml:"server"`
+	Base_path         string `yaml:"base_path"`
+	Filename          string `yaml:"filename"`
+	Api_url           string `yaml:"api_url"`
+	Postgres_host     string `yaml:"postgres_host"`
+	Postgres_port     string `yaml:"postgres_post"`
+	Postgres_db       string `yaml:"postgres_db"`
+	Postgres_user     string `yaml:"postgres_user"`
+	Postgres_password string `yaml:"postgres_password"`
 }
 
 func NewConfig(p string) (*Config, error) {

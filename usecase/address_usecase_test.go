@@ -3,8 +3,7 @@ package usecase
 import (
 	"testing"
 
-	"github.com/Marcxz/academy-go-q32021/models"
-	"github.com/Marcxz/academy-go-q32021/repoitory/mock"
+	"github.com/Marcxz/academy-go-q32021/repository/mock"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -12,16 +11,7 @@ import (
 
 func TestReadCSVAddress(t *testing.T) {
 	ctrl := gomock.NewController(t)
-	aAddFound := []models.Address{
-		models.Address{
-			ID: 0,
-			A:  "centro,guadalajara,jalisco",
-			P: models.Point{
-				Lat: 20.6866131,
-				Lng: -103.3507872,
-			},
-		},
-	}
+	aAddFound := []string{}
 
 	defer ctrl.Finish()
 
@@ -43,15 +33,18 @@ func TestReadCSVAddress(t *testing.T) {
 		t.Fail()
 	}
 }
+
 func TestGeocodeAddress(t *testing.T) {
 	ctrl := gomock.NewController(t)
-
+	add := "wizeline, guadalajara, méxico"
 	defer ctrl.Finish()
-
+	aAddFound := []string{}
 	mcr := mock.NewMockCsv(ctrl)
 	mgr := mock.NewMockGeo(ctrl)
 
 	auc := NewAddressUseCase(mcr, mgr)
+	mgr.EXPECT().GeocodeAddress(add)
+	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
 
 	am, err := auc.GeocodeAddress("wizeline, guadalajara, méxico")
 
@@ -60,7 +53,7 @@ func TestGeocodeAddress(t *testing.T) {
 		t.Fail()
 	}
 
-	if am != nil {
+	if am == nil {
 		t.Error("the address shouldn't be nil")
 		t.Fail()
 	}
@@ -70,24 +63,37 @@ func TestStoreGeocodeAddress(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	add := "wizeline, guadalajara, mexico"
 
+	defer ctrl.Finish()
+	aAddFound := []string{}
+
 	mgr := mock.NewMockGeo(ctrl)
 	mcr := mock.NewMockCsv(ctrl)
 
 	auc := NewAddressUseCase(mcr, mgr)
 
-	a, err := auc.StoreGeocodeAddress(add)
+	mgr.EXPECT().GeocodeAddress(add)
+	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
+	var err error
+	
+	mcr.EXPECT().StoreAddressCSV(0, add, 0.0, 0.0).Return(err)
+	
+	if err != nil {
+		t.Error(err.Error())
+		t.Fatal()
+	}
+	a, _ := auc.StoreGeocodeAddress(add)
 
 	if err != nil {
 		t.Error(err.Error())
 		t.Fatal()
 	}
 
-	if a != nil {
+	if a == nil {
 		t.Error("the address shouldn't be nil")
 		t.Fatal()
 	}
-	defer ctrl.Finish()
 }
+
 func TestInvalidLineValidate(t *testing.T) {
 	err := validate(0, "0|INVALID|-1")
 	assert.Equal(t, "the line at the index 0 should be composed for 4 pipes", err.Error())
