@@ -1,3 +1,4 @@
+//go:generate mockgen -source csv_repository.go -destination mock/csv_repository_mock.go -package mock
 package repository
 
 import (
@@ -7,21 +8,33 @@ import (
 	"github.com/Marcxz/academy-go-q32021/infraestructure"
 )
 
-// csv - the interface for the csv repository
-type csv interface {
-	ReadCSVFile(f string) ([]string, error)
+type Reader interface {
+	ReadCSVFile() ([]string, error)
+}
+type Storer interface {
+	StoreAddressCSV(id int, a string, lat float64, lng float64) error
 }
 
-type cr struct{}
+// csv - the interface for the csv repository
+type Csv interface {
+	Reader
+	Storer
+}
+
+type cr struct {
+	icsv infraestructure.Csv
+}
 
 // NewCsvRepository - func to create new csv repository used in usecase
-func NewCsvRepository() csv {
-	return &cr{}
+func NewCsvRepository(i_csv infraestructure.Csv) Csv {
+	return &cr{
+		i_csv,
+	}
 }
 
 // ReadCSVFile - func inteconnect repository with csv infraestructure to read csv files.
-func (*cr) ReadCSVFile(f string) ([]string, error) {
-	cl, err := infraestructure.ReadCSVFile(f)
+func (c *cr) ReadCSVFile() ([]string, error) {
+	cl, err := c.icsv.ReadCSVFile()
 
 	if err != nil {
 		fmt.Println("error", err)
@@ -29,5 +42,10 @@ func (*cr) ReadCSVFile(f string) ([]string, error) {
 	}
 	as := strings.Split(string(cl), "\n")
 
-	return as, nil
+	return as[:len(as)-1], nil
+}
+
+// StoreAddressCSV - repository func to store an address in a csv file
+func (c *cr) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
+	return c.icsv.StoreAddressCSV(id, a, lat, lng)
 }

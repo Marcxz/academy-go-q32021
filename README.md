@@ -1,3 +1,19 @@
+# Second Deliverable
+
+At this moment I added a new endpoint that connect to an external api to geocode an address and store the result in the csv file. I Added unit test to usecase using mocks and specific cases. The code was refactored and used clean architecture.
+
+The new endpoint is a Get Method using an address queryparam as following:
+
+```sh
+   http://localhost:3000/storeGeocodeAddress?address=plaza galerias, zapopan, jalisco
+   ```
+
+To test the usecases. You should be in the usecase folder where address_usecase_test.go is and run:
+
+```sh
+   go test
+   ```
+
 # First Deliverable
 
 In this step I create the Api Architecture, an endpoint where it will read the file where I will store and read the information of the project.
