@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+ integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+ crossorigin=""/>
+ <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+ integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+ crossorigin=""></script>
+ <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
+ <title>Wizeline Go Bootcamp</title>
+
+ <style>
+    .mapid {
+      height: 900px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+    <header class="p-3 bg-dark text-white">
+        <div class="container">
+            <h2>Wizeline - Go Bootcamp</h2>
+            <h4>{{.Name}}</h4>
+        </div>
+    </header>
+    <div id="mapid" class="mapid"></div>
+<script type="text/javascript">
+    
+    var m = L.map('mapid').setView([20.6443271, -103.4163436], 13);
+    L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    maxZoom: 18
+    }).addTo(m);
+
+    fa = `From {{.From.A}}`
+    
+    latF = `{{.From.P.Lat}}`
+    lngF = `{{.From.P.Lng}}`
+    var fm = L.marker([latF, lngF]).addTo(m);
+    fm.bindTooltip(fa).openTooltip();
+
+    ta = `To {{.To.A}}`
+    latT = `{{.To.P.Lat}}`
+    lngT = `{{.To.P.Lng}}`
+    var tm = L.marker([latT, lngT]).addTo(m);
+    tm.bindTooltip(ta).openTooltip();
+
+    var r = `[{{.R}}]`
+    jr = JSON.parse(r)
+
+    var rl = L.geoJSON().addTo(m);
+    rl.addData(jr);
+</script>
+</body>
+
+</html>

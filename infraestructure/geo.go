@@ -11,27 +11,28 @@ import (
 	"github.com/Marcxz/academy-go-q32021/conf"
 )
 
-// geo - interface that connects to an external api to do geocoding process
+// geo - interface that makes the contract to connects to an external api to do the geocoding process
 type Geo interface {
 	GeocodingAddress(string) (float64, float64, error)
 }
 
+// ig - struct to isolate the infraestructure functions with the repository
 type ig struct {
 	con *conf.Config
 }
 
-// NewGeoInfraestructure - constructor for geo infrastructure
+// NewGeoInfraestructure - constructor for geo infraestructure, returns a struct with the geo interface requirements
 func NewGeoInfraestructure(cfg *conf.Config) Geo {
 	return &ig{
 		cfg,
 	}
 }
 
-// GeocodingAddress - function that given an address, connect to an external api and translate it to a lat,lng coordinate
+// GeocodingAddress - function that given an address, connect to an external api and convert it to a lat,lng coordinate, returns the coordinate and an error if exist
 func (g *ig) GeocodingAddress(a string) (float64, float64, error) {
 	v := make(url.Values)
 	v.Add("direccion", a)
-	url := fmt.Sprintf("%s?%s", g.con.Api_url, v.Encode())
+	url := fmt.Sprintf("%s?%s", g.con.ApiUrl, v.Encode())
 
 	r, err := http.Get(url)
 

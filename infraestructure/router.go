@@ -7,59 +7,51 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Getter - interface that makes the contract to Get Handlers
 type Getter interface {
 	Get(uri string, f func(http.ResponseWriter, *http.Request))
 }
 
+// Poster - interface that makes the contract to Post Handlers
 type Poster interface {
 	Post(uri string, f func(http.ResponseWriter, *http.Request))
 }
 
+// Server - interface that makes the contract to create a new api server
 type Server interface {
 	Serve(p string)
 }
 
-type Handler interface {
-	ConfigHandlers()
-}
-
-// Router - Interface to mock the router interface
+// Router - Interface that concatenate all the router interfaces
 type Router interface {
 	Getter
 	Poster
 	Server
 }
 
+// muxRouter - struct to isolate the infraestructure with repository layer
 type muxRouter struct {
 	r *mux.Router
 }
 
-//NewRouterInfraestructure - like the constructor of the Router to handle all the request from the user
+//NewRouterInfraestructure - router constructor func to create a router struct with the Router interface requirements
 func NewRouterInfraestructure(r *mux.Router) Router {
 	return &muxRouter{
 		r,
 	}
 }
 
-/*
-func (m *muxRouter) ConfigHandlers() {
-	// address Handlers
-	m.Get("/address", m.auc.ReadCSVAddress)
-	m.Get("/geocodeAddress", m.auc.GeocodeAddress)
-	m.Get("/storeGeocodeAddress", m.auc.StoreGeocodeAddress)
-}
-*/
-// Get - Refactor and handle the get request from the user
+// Get - refactor and handle the get request from the user
 func (m *muxRouter) Get(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	m.r.HandleFunc(uri, f).Methods(http.MethodGet)
 }
 
-// Post - Refactor and handle the post request from the user
+// Post - refactor and handle the post request from the user
 func (m *muxRouter) Post(uri string, f func(w http.ResponseWriter, r *http.Request)) {
 	m.r.HandleFunc(uri, f).Methods(http.MethodPost)
 }
 
-// Server - Up and run the project
+// Server - func to up and run the project
 func (m *muxRouter) Serve(p string) {
 	fmt.Printf("Server is running on port %s", p)
 	http.ListenAndServe(p, m.r)
