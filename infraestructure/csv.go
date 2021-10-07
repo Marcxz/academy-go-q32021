@@ -38,7 +38,7 @@ func NewCsvInfraestructure(cfg *conf.Config) Csv {
 
 // ReadCSVFile - read a csv addresses file, returns a byte arrays of all the addresses and an error if exist
 func (c *ic) ReadCSVFile() ([]byte, error) {
-	p := fmt.Sprintf("%s%s", c.con.Base_path, c.con.Filename)
+	p := fmt.Sprintf("%s%s", c.con.BasePath, c.con.Filename)
 	l, err := ioutil.ReadFile(p)
 
 	if err != nil {
@@ -50,7 +50,7 @@ func (c *ic) ReadCSVFile() ([]byte, error) {
 
 // StoreAddressCSV - func to push an address in a csv file, returns error if exist
 func (c *ic) StoreAddressCSV(id int, a string, lat float64, lng float64) error {
-	p := fmt.Sprintf("%s%s", c.con.Base_path, c.con.Filename)
+	p := fmt.Sprintf("%s%s", c.con.BasePath, c.con.Filename)
 
 	f, err := os.OpenFile(p, os.O_APPEND, 0644)
 	if err != nil {

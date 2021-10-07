@@ -11,7 +11,7 @@ import (
 // Config - the config struct for global variables
 type Config struct {
 	Server           string `yaml:"server"`
-	Base_path        string `yaml:"basePath"`
+	BasePath         string `yaml:"basePath"`
 	Filename         string `yaml:"filename"`
 	ApiUrl           string `yaml:"apiURL"`
 	MapPath          string `yaml:"mapPath"`
