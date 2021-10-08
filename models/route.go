@@ -1,10 +1,10 @@
 package models
 
-// Route - struct from a route. The route has an id, name of the route, from point, to point and a collection of points that make the route
+// Route - route struct composed by an id, name, from point, to point and a geojson string route
 type Route struct {
 	ID   int     `json:"id"`
 	Name string  `json:"name"`
 	From Address `json:"from"`
 	To   Address `json:"to"`
-	R    []Point `json:"r"`
+	R    string  `json:"r"`
 }

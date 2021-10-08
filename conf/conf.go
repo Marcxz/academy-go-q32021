@@ -8,18 +8,22 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Config - the config struct for global variables
 type Config struct {
-	Server            string `yaml:"server"`
-	Base_path         string `yaml:"base_path"`
-	Filename          string `yaml:"filename"`
-	Api_url           string `yaml:"api_url"`
-	Postgres_host     string `yaml:"postgres_host"`
-	Postgres_port     string `yaml:"postgres_post"`
-	Postgres_db       string `yaml:"postgres_db"`
-	Postgres_user     string `yaml:"postgres_user"`
-	Postgres_password string `yaml:"postgres_password"`
+	Server           string `yaml:"server"`
+	BasePath         string `yaml:"basePath"`
+	Filename         string `yaml:"filename"`
+	ApiUrl           string `yaml:"apiURL"`
+	MapPath          string `yaml:"mapPath"`
+	MapFile          string `yaml:"mapFile"`
+	PostgresHost     string `yaml:"postgresHost"`
+	PostgresPort     string `yaml:"postgresPort"`
+	PostgresDb       string `yaml:"postgresDB"`
+	PostgresUser     string `yaml:"postgresUser"`
+	PostgresPassword string `yaml:"postgresPassword"`
 }
 
+// NewConfi - Constructor function to create a config struct with the constant variables
 func NewConfig(p string) (*Config, error) {
 	c := &Config{}
 
@@ -37,6 +41,7 @@ func NewConfig(p string) (*Config, error) {
 	return c, nil
 }
 
+// ValidateConfigPath - Validate if the config file path exists and if it is a file
 func ValidateConfigPath(p string) error {
 	s, err := os.Stat(p)
 
@@ -51,6 +56,7 @@ func ValidateConfigPath(p string) error {
 	return nil
 }
 
+// ParseFlags - func to reference to a config path and validate it
 func ParseFlags() (string, error) {
 	var cp string
 

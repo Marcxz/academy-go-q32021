@@ -17,8 +17,9 @@ func TestReadCSVAddress(t *testing.T) {
 
 	mcr := mock.NewMockCsv(ctrl)
 	mgr := mock.NewMockGeo(ctrl)
+	mdr := mock.NewMockGeoDB(ctrl)
 
-	auc := NewAddressUseCase(mcr, mgr)
+	auc := NewAddressUseCase(mcr, mgr, mdr)
 
 	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
 	aadd, err := auc.ReadCSVAddress()
@@ -41,8 +42,9 @@ func TestGeocodeAddress(t *testing.T) {
 	aAddFound := []string{}
 	mcr := mock.NewMockCsv(ctrl)
 	mgr := mock.NewMockGeo(ctrl)
+	mdr := mock.NewMockGeoDB(ctrl)
 
-	auc := NewAddressUseCase(mcr, mgr)
+	auc := NewAddressUseCase(mcr, mgr, mdr)
 	mgr.EXPECT().GeocodeAddress(add)
 	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
 
@@ -68,15 +70,16 @@ func TestStoreGeocodeAddress(t *testing.T) {
 
 	mgr := mock.NewMockGeo(ctrl)
 	mcr := mock.NewMockCsv(ctrl)
+	mdr := mock.NewMockGeoDB(ctrl)
 
-	auc := NewAddressUseCase(mcr, mgr)
+	auc := NewAddressUseCase(mcr, mgr, mdr)
 
 	mgr.EXPECT().GeocodeAddress(add)
 	mcr.EXPECT().ReadCSVFile().Return(aAddFound, nil)
 	var err error
-	
+
 	mcr.EXPECT().StoreAddressCSV(0, add, 0.0, 0.0).Return(err)
-	
+
 	if err != nil {
 		t.Error(err.Error())
 		t.Fatal()
