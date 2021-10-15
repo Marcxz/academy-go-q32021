@@ -1,10 +1,10 @@
 # Last Deliverable - Wizeline Geocoding Go API
 
-The project is the result of every knoweldge that Wizeline Academy, mentors and bootcamp classmates shared with me, I really appreciate. The project is about building an API using a lot of golang topics that we learned during the Go Bootcamp like clean architecture, golang basics, routing, unit test, concurrency, etc. 
+The project is the result of every knoweldge that Wizeline Academy, Mentors and bootcamp classmates shared with me, I really appreciate it. The project is about building an API using a lot of go topics that we learned during the Go Bootcamp like clean architecture, go basics, routing, unit test, concurrency, etc. 
 
-The API consists in geocode addresses using Google Maps API as external interface, store the result at the csv file, read it displaying to the user as a JSON response, and generate the best route between two addresses using Dijkstra algorithm and render it in a map web page.
+The API consists in geocode addresses using Google Maps API as external interface, store the result in a csv file, read it displaying to the user as a JSON response and generate the best route between two addresses using Dijkstra algorithm and render it in a map web page.
 
-
+![api architecture](https://raw.githubusercontent.com/Marcxz/academy-go-q32021/feature/final-deliverable/files/readme/api_architecture.PNG)
 
 ## Software Architecture
 
@@ -12,49 +12,173 @@ The project uses the clean architecture pattern that's why it was separated into
 
 ![clean architecture pattern](https://raw.githubusercontent.com/Marcxz/academy-go-q32021/feature/final-deliverable/files/readme/clean_architecture_layers.PNG)
 
+## Installation
 
-
-
-# Second Deliverable
-
-At this moment I added a new endpoint that connect to an external api to geocode an address and store the result in the csv file. I Added unit test to usecase using mocks and specific cases. The code was refactored and used clean architecture.
-
-The new endpoint is a Get Method using an address queryparam as following:
+Clone or download the repo, you should have installed go in your computer. Once downloaded or cloned, download the modules and run the project:
 
 ```sh
-   http://localhost:3000/storeGeocodeAddress?address=plaza galerias, zapopan, jalisco
-   ```
+cd academy-go-q32021
+go mod tidy
+go run main.go
+```
+## EndPoints
+### ReadCVSAddress
+This endpoint read a csv file where we store the addresses that we already geocoded. Each address is composed by 5 elements (ID, String Address, Latitude, Longitude) separated by pipes (|). For example:
+- 0|centro,guadalajara,jalisco|20.6866131|-103.3507872
+- 1|wizeline, zapopan, jalisco, mexico|20.6443271|-103.4163436
 
-To test the usecases. You should be in the usecase folder where address_usecase_test.go is and run:
-
-```sh
-   go test
-   ```
- 
-# First Deliverable
-
-In this step I create the Api Architecture, an endpoint where it will read the file where I will store and read the information of the project.
-
-## Prerequisites
-
-You should install all the project dependecies with the next instruction:
-
-```sh
-   go get ./...
-   ```
-## Run and Consult
-
-The API Run on the port 3000 and to run up you should type the next instruction: 
-
-```sh
-   go run ./main.go
-   ```
-
-There is an endpoint wich read a csv file where I store different addresses and return in a JSON format:
+To run this endpoint you should type the following address:
 
 ```sh
    http://localhost:3000/address
    ```
+The response should look like: 
+```json
+{
+    "code": 200,
+    "data": [
+        {
+            "id": 0,
+            "a": "centro,guadalajara,jalisco",
+            "p": {
+                "lat": 20.6866131,
+                "lng": -103.3507872
+            }
+        },
+    ]
+}
+```
+
+### GeocodeAddress
+Endpoint that receive a string address, connect with an external api to excecute the geocoding convertion and return an address as a JSON. 
+To run this endpoint you should type the following address:
+
+```sh
+   http://localhost:3000/geocodeAddress?address=wizeline, zapopan, jalisco
+   ```
+The response should look like: 
+
+```json
+{
+    "code": 200,
+    "data": {
+        "id": 10,
+        "a": "wizeline, zapopan, jalisco",
+        "p": {
+            "lat": 20.6443271,
+            "lng": -103.4163436
+        }
+    }
+}
+```
+### StoreGeocodeAddress
+It is like GeocodeAddress with the difference that this endpoint stores the address geocoded into the csv file. Once stored, it returns the address geocoded in a JSON format.
+
+To run this endpoint you should type the following address:
+
+```sh
+   http://localhost:3000/storeGeocodeAddress?address=plaza del sol, guadalajara, jalisco
+   ```
+The response should look like: 
+
+```json
+{
+    "code": 200,
+    "data": {
+        "id": 10,
+        "a": "plaza del sol, guadalajara, jalisco",
+        "p": {
+            "lat": 20.6505195,
+            "lng": -103.4013333
+        }
+    }
+}
+```
+
+### ReadAddressConcurrency
+
+This endpoint read the csv file using concurrency. This endpoint recieve 3 queryparams:
+
+- type - can be even, odd or all to select the items depending from their ID
+- items - number of items to collect from the csv file. If the number of items is over the csv length, it will take the csv length.
+- items_per_worker - number of items which recieve from each worker. The concurrency works using workers and each worker has channels; this param specifies how many channels will have each worker.
+
+To run this endpoint you should type the following address:
+
+```sh
+   http://localhost:3000/readAddressConcurrency?items=100&items_per_worker=10&type=even
+   ```
+The response should look like: 
+```json
+{
+    "code": 200,
+    "data": {
+        "0": {
+            "id": 0,
+            "a": "centro,guadalajara,jalisco",
+            "p": {
+                "lat": 20.6866131,
+                "lng": 20.6866131
+            }
+        },
+        "2": {
+            "id": 2,
+            "a": "la minerva, guadalajara, jalisco, mexico",
+            "p": {
+                "lat": 20.6743943,
+                "lng": 20.6743943
+            }
+        },
+        "4": {
+            "id": 4,
+            "a": "estado 3 de marzo, zapopan, jalisco, mexico",
+            "p": {
+                "lat": 20.693501,
+                "lng": 20.693501
+            }
+        },
+        "6": {
+            "id": 6,
+            "a": "mercado san juan de dios, guadalajara, jalisco, mexico",
+            "p": {
+                "lat": 20.675515,
+                "lng": 20.675515
+            }
+        },
+        "8": {
+            "id": 8,
+            "a": "cucei, guadalajara, jalisco, mexico",
+            "p": {
+                "lat": 20.657054,
+                "lng": 20.657054
+            }
+        }
+    }
+}
+```
+### GenerateRouterFrom2Address
+
+This is the last endpoint, it recieves two string addresses, geocode each one and interconnect with a spatial postgreSQL database to run the disktra algorithm and return a router model. Once the api has the router model, it returns the result in html format showing the result in an interctive Openlayers Map. The Queryparams are:
+- From - The string address where we will start the route
+- To - The string address where we want to end
+
+
+To run this endpoint you should type the following address:
+
+```sh
+   http://localhost:3000/readAddressConcurrency?items=100&items_per_worker=10&type=even
+   ```
+The response should look like: 
+
+![route response](https://raw.githubusercontent.com/Marcxz/academy-go-q32021/feature/final-deliverable/files/readme/route_response.PNG)
+
+## Unit Test
+The project has unit test for the usecase layer because it has the project bussiness logic layer. This has 3 test table driven tests for the main methods (ReadCSVAddress, StoreCSVAddress and GeocodeAddress) and several isolated unit test to evaluate if an string csv address is well formed. To run the unit test run the following command:
+
+```sh
+cd academy-go-q32021\usecase
+go test
+```
 
 # Golang Bootcamp
 

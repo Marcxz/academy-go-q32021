@@ -1,6 +1,6 @@
 server: ":3000"
 basePath: "files/"
-filename: "alot_address.csv"
+filename: "address.csv"
 apiURL: "https://appreactivacioneconomica.tlajomulco.gob.mx/api/georeferencia/queryGeoreferencia"
 mapPath: "files/templates/*"
 mapFile: "map.html"
