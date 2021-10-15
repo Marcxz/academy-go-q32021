@@ -1,12 +1,18 @@
-# Last Deliverable - Wizeline Geocoding Golang API
+# Last Deliverable - Wizeline Geocoding Go API
 
 The project is the result of every knoweldge that Wizeline Academy, mentors and bootcamp classmates shared with me, I really appreciate. The project is about building an API using a lot of golang topics that we learned during the Go Bootcamp like clean architecture, golang basics, routing, unit test, concurrency, etc. 
 
 The API consists in geocode addresses using Google Maps API as external interface, store the result at the csv file, read it displaying to the user as a JSON response, and generate the best route between two addresses using Dijkstra algorithm and render it in a map web page.
 
-## Architecture
+
+
+## Software Architecture
 
 The project uses the clean architecture pattern that's why it was separated into 4 layers (domain, usecase, controller / repository and interface. The result is as the following:
+
+![clean architecture pattern](https://raw.githubusercontent.com/Marcxz/academy-go-q32021/feature/final-deliverable/files/readme/clean_architecture_layers.PNG)
+
+
 
 
 # Second Deliverable
