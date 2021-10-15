@@ -158,7 +158,7 @@ The response should look like:
 ```
 ### GenerateRouterFrom2Address
 
-This is the last endpoint, it recieves two string addresses, geocode each one and interconnect with a spatial postgreSQL database to run the disktra algorithm and return a router model. Once the api has the router model, it returns the result in html format showing the result in an interctive Openlayers Map. The Queryparams are:
+This is the last endpoint, it recieves two string addresses, geocode each one and interconnect with a spatial postgreSQL database to run the disktra algorithm and return a router model. Once the api has the router model, it returns the result in html format showing the result in an interactive Openlayers Map. The Queryparams are:
 - From - The string address where we will start the route
 - To - The string address where we want to end
 
@@ -166,7 +166,7 @@ This is the last endpoint, it recieves two string addresses, geocode each one an
 To run this endpoint you should type the following address:
 
 ```sh
-   http://localhost:3000/readAddressConcurrency?items=100&items_per_worker=10&type=even
+   http://localhost:3000/generateRouterFrom2Address?from=wizeline, guadalajara, jalisco&to=cucei, guadalajara, jalisco
    ```
 The response should look like: 
 
