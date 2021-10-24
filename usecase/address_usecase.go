@@ -82,6 +82,7 @@ func (a *auc) ReadCSVAddress() ([]models.Address, error) {
 		}
 		an := al[1]
 		lat, err := strconv.ParseFloat(al[2], 64)
+
 		if err != nil {
 			return nil, err
 		}

@@ -68,19 +68,19 @@ func (gdb *geoDB) GenerateRoute(latA float64, lngA float64, latB float64, lngB f
 	q := `
 	with ruta as (
 	select * from pgr_dijkstra('Select gid as id, source, target, length_m as cost 
-		From public."taller_pgRouting_ways" tprw 
+		From public.taller_pgrouting_ways tprw 
 	', 
 	
-	(select id from public."taller_pgRouting_ways_vertices_pgr" tprwvp
+	(select id from public.taller_pgrouting_ways_vertices_pgr tprwvp
 	order by st_distance(st_transform(geom, 32613), st_transform(ST_SetSRID(st_makepoint($1, $2), 4326), 32613)) asc
 	limit 1), 
 	
-	(select id from public."taller_pgRouting_ways_vertices_pgr" tprwvp
+	(select id from public.taller_pgrouting_ways_vertices_pgr tprwvp
 	order by st_distance(st_transform(geom, 32613), st_transform(ST_SetSRID(st_makepoint($3, $4), 4326), 32613)) asc
 	limit 1), 
 	
 	directed := true))
-	select st_asgeojson(tprw.geom) geojson from ruta left join public."taller_pgRouting_ways" tprw on ruta.edge = tprw.gid
+	select st_asgeojson(tprw.geom) geojson from ruta left join public.taller_pgrouting_ways tprw on ruta.edge = tprw.gid
 	where st_asgeojson(tprw.geom) is not null`
 
 	rows, err := gdb.Db.Query(q, lngA, latA, lngB, latB)
